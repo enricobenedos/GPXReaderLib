@@ -25,6 +25,14 @@ static void Main(string[] args)
                 Console.WriteLine("End Date: " + gPXReader.GetEndDt());
                 Console.WriteLine("Duration: " + gPXReader.GetDuration());
                 Console.WriteLine("Distance: " + gPXReader.GetDistance());
+
+                Console.WriteLine("Printing complete list of latitude - longitude");
+
+                List<GPXReaderLib.Models.GPXCoordinates> coordinates = gPXReader.GetGPXCoordinates();
+                for (int i = 0; i < coordinates.Count; i++)
+                {
+                    Console.WriteLine($"lat: {coordinates[i].Latitude} - lon: {coordinates[i].Longitude}");
+                }
             }
             catch (Exception ex)
             {
