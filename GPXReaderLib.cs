@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using GPXReaderLib.Models;
 
 namespace GPXReaderLib
 {
@@ -111,6 +112,27 @@ namespace GPXReaderLib
             }
 
             return dist * 1.609344;
+        }
+
+        /// <summary>
+        /// Return a list of latitude and longitude coordinates
+        /// </summary>
+        /// <returns></returns>
+        public List<GPXCoordinates> GetGPXCoordinates()
+        {
+            List<XAttribute> latitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lat").ToList();
+            List<XAttribute> longitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lon").ToList();
+
+            List<GPXCoordinates> gPXCoordinates = new List<GPXCoordinates>();
+            for (int i = 0; i < latitudesXAtt.Count; i++) //assume that two lists have same XAttributes count
+            {
+                double latitude = double.Parse(latitudesXAtt[i].Value);
+                double longitude = double.Parse(longitudesXAtt[i].Value);
+
+                gPXCoordinates.Add(new GPXCoordinates(latitude, longitude));
+            }
+
+            return gPXCoordinates;
         }
     }
 }
