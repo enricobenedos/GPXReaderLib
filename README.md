@@ -33,6 +33,12 @@ static void Main(string[] args)
                 {
                     Console.WriteLine($"lat: {coordinates[i].Latitude} - lon: {coordinates[i].Longitude}");
                 }
+
+                GPXReaderLib.Models.GPXAltimetry altimetry = gPXReader.GetGPXAltimetry();
+                foreach (double elevation in altimetry.Altimetries)
+                {
+                    Console.WriteLine($"Elevation value: {elevation}");
+                }
             }
             catch (Exception ex)
             {
