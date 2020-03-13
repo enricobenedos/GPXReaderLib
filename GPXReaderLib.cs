@@ -134,5 +134,20 @@ namespace GPXReaderLib
 
             return gPXCoordinates;
         }
+
+        /// <summary>
+        /// Return a list of elevation to obtain a detailed altimetry
+        /// </summary>
+        /// <returns></returns>
+        public GPXAltimetry GetGPXAltimetry()
+        {
+            double minElevation = GetElevation(ElevationType.Min);
+            double maxElevation = GetElevation(ElevationType.Max);
+            double avgElevation = GetElevation(ElevationType.Avg);
+
+            List<double> elevationValues = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Select(x => double.Parse(x.Value)).ToList();
+
+            return new GPXAltimetry(minElevation, maxElevation, avgElevation, elevationValues);
+        }
     }
 }
