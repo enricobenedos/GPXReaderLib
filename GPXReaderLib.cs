@@ -119,30 +119,20 @@ namespace GPXReaderLib
         /// </summary>
         /// <param name="dateTime">Lat/Lon record datetime</param>
         /// <returns>Total kilometers value</returns>
-        public double GetDistanceFromZero(DateTime dateTime)
+        private double GetDistance(XElement previousTrackPoint, XElement actualTrackPoint)
         {
             //"//p:gpx//p:trk//p:trkseg//p:trkpt//p:time"
             List<XAttribute> latitudesXAtt = new List<XAttribute>();
             List<XAttribute> longitudesXAtt = new List<XAttribute>();
 
-            foreach (XElement trackPoint in gpx.XPathSelectElements("/p:gpx/p:trk/p:trkseg/p:trkpt", xmlNamespaceManager))
+            if (previousTrackPoint != null)
             {
-                //Obtain actual trackpoint datetime
-                string dtValue = trackPoint.XPathSelectElement("p:time", xmlNamespaceManager).Value;
-                DateTime trackPointDT = DateTime.Parse(dtValue);
-
-                //If this trackpoint has a datetime minor than the user passed one --> add lat/lon to list to be able make kilometers sum
-                if (trackPointDT <= dateTime)
-                {
-                    latitudesXAtt.Add(trackPoint.Attribute("lat"));
-                    longitudesXAtt.Add(trackPoint.Attribute("lon"));
-                }
-                else
-                {
-                    break;
-                }
+                latitudesXAtt.Add(previousTrackPoint.Attribute("lat"));
+                longitudesXAtt.Add(previousTrackPoint.Attribute("lon"));
             }
 
+            latitudesXAtt.Add(actualTrackPoint.Attribute("lat"));
+            longitudesXAtt.Add(actualTrackPoint.Attribute("lon"));
 
             double dist = 0.0;
             for (int i = 0; i < latitudesXAtt.Count - 1; i++)
@@ -200,16 +190,26 @@ namespace GPXReaderLib
             double maxElevation = GetElevation(ElevationType.Max);
             double avgElevation = GetElevation(ElevationType.Avg);
 
-            //List<double> elevationValues = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Select(x => double.Parse(x.Value)).ToList();
             List<Altimetry> altimetries = new List<Altimetry>();
+            XElement previousTrackPoint = null;
+
+            //Get list of all registered info record
             foreach (XElement trackPoint in gpx.XPathSelectElements("/p:gpx/p:trk/p:trkseg/p:trkpt", xmlNamespaceManager))
             {
+                //Get current elevation
                 double actualElevation = double.Parse(trackPoint.XPathSelectElement("p:ele", xmlNamespaceManager).Value);
-                DateTime actualDateTime = DateTime.Parse(trackPoint.XPathSelectElement("p:time", xmlNamespaceManager).Value);
 
-                double actualDistance = GetDistanceFromZero(actualDateTime);
+                //Get distance between previous trackPoint and the current one
+                double distance = GetDistance(previousTrackPoint, trackPoint);
+                //Get last inserted altimetry distance
+                double lastDistanceValue = altimetries.LastOrDefault() == null ? 0.0 : altimetries.Last().Kilometers;
+
+                //Obtain the actual distance value from start sum actual value with the last one
+                double actualDistance = distance + lastDistanceValue;
 
                 altimetries.Add(new Altimetry(actualElevation, actualDistance));
+
+                previousTrackPoint = trackPoint;
             }
 
             return new GPXAltimetry(minElevation, maxElevation, avgElevation, altimetries);
