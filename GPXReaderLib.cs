@@ -81,13 +81,68 @@ namespace GPXReaderLib
         }
 
         /// <summary>
-        /// Return distance in kilometers
+        /// Return total distance in kilometers
         /// </summary>
         /// <returns></returns>
         public double GetDistance()
         {
             List<XAttribute> latitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lat").ToList();
             List<XAttribute> longitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lon").ToList();
+
+            double dist = 0.0;
+            for (int i = 0; i < latitudesXAtt.Count - 1; i++)
+            {
+                double lat1 = double.Parse(latitudesXAtt[i].Value);
+                double lat2 = double.Parse(latitudesXAtt[i + 1].Value);
+
+                double lon1 = double.Parse(longitudesXAtt[i].Value);
+                double lon2 = double.Parse(longitudesXAtt[i + 1].Value);
+
+                double rlat1 = Math.PI * lat1 / 180;
+                double rlat2 = Math.PI * lat2 / 180;
+                double theta = lon1 - lon2;
+                double rtheta = Math.PI * theta / 180;
+                double distance =
+                   Math.Sin(rlat1) * Math.Sin(rlat2) + Math.Cos(rlat1) *
+                   Math.Cos(rlat2) * Math.Cos(rtheta);
+                distance = Math.Acos(distance);
+                distance = distance * 180 / Math.PI;
+
+                dist += distance * 60 * 1.1515;
+            }
+
+            return dist * 1.609344;
+        }
+
+        /// <summary>
+        /// Return kilometers value from gpx start to desidered date time
+        /// </summary>
+        /// <param name="dateTime">Lat/Lon record datetime</param>
+        /// <returns>Total kilometers value</returns>
+        public double GetDistanceFromZero(DateTime dateTime)
+        {
+            //"//p:gpx//p:trk//p:trkseg//p:trkpt//p:time"
+            List<XAttribute> latitudesXAtt = new List<XAttribute>();
+            List<XAttribute> longitudesXAtt = new List<XAttribute>();
+
+            foreach (XElement trackPoint in gpx.XPathSelectElements("/p:gpx/p:trk/p:trkseg/p:trkpt", xmlNamespaceManager))
+            {
+                //Obtain actual trackpoint datetime
+                string dtValue = trackPoint.XPathSelectElement("p:time", xmlNamespaceManager).Value;
+                DateTime trackPointDT = DateTime.Parse(dtValue);
+
+                //If this trackpoint has a datetime minor than the user passed one --> add lat/lon to list to be able make kilometers sum
+                if (trackPointDT <= dateTime)
+                {
+                    latitudesXAtt.Add(trackPoint.Attribute("lat"));
+                    longitudesXAtt.Add(trackPoint.Attribute("lon"));
+                }
+                else
+                {
+                    break;
+                }
+            }
+
 
             double dist = 0.0;
             for (int i = 0; i < latitudesXAtt.Count - 1; i++)
@@ -145,9 +200,19 @@ namespace GPXReaderLib
             double maxElevation = GetElevation(ElevationType.Max);
             double avgElevation = GetElevation(ElevationType.Avg);
 
-            List<double> elevationValues = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Select(x => double.Parse(x.Value)).ToList();
+            //List<double> elevationValues = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Select(x => double.Parse(x.Value)).ToList();
+            List<Altimetry> altimetries = new List<Altimetry>();
+            foreach (XElement trackPoint in gpx.XPathSelectElements("/p:gpx/p:trk/p:trkseg/p:trkpt", xmlNamespaceManager))
+            {
+                double actualElevation = double.Parse(trackPoint.XPathSelectElement("p:ele", xmlNamespaceManager).Value);
+                DateTime actualDateTime = DateTime.Parse(trackPoint.XPathSelectElement("p:time", xmlNamespaceManager).Value);
 
-            return new GPXAltimetry(minElevation, maxElevation, avgElevation, elevationValues);
+                double actualDistance = GetDistanceFromZero(actualDateTime);
+
+                altimetries.Add(new Altimetry(actualElevation, actualDistance));
+            }
+
+            return new GPXAltimetry(minElevation, maxElevation, avgElevation, altimetries);
         }
     }
 }
