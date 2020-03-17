@@ -196,8 +196,12 @@ namespace GPXReaderLib
             //Get list of all registered info record
             foreach (XElement trackPoint in gpx.XPathSelectElements("/p:gpx/p:trk/p:trkseg/p:trkpt", xmlNamespaceManager))
             {
-                //Get current elevation
-                double actualElevation = double.Parse(trackPoint.XPathSelectElement("p:ele", xmlNamespaceManager).Value);
+                //Get current elevation if available else continue with next cycle˙
+                bool convResult = double.TryParse(trackPoint.XPathSelectElement("p:ele", xmlNamespaceManager)?.Value, out double actualElevation);
+                if (!convResult)
+                {
+                    continue;
+                }
 
                 //Get distance between previous trackPoint and the current one
                 double distance = GetDistance(previousTrackPoint, trackPoint);
