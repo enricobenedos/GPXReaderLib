@@ -8,7 +8,7 @@ namespace GPXReaderLib.Models
     /// </summary>
     public class GPXAltimetry
     {
-        public GPXAltimetry(double minElevation, double maxElevation, double avgElevation, IEnumerable<double> altimetries)
+        public GPXAltimetry(double minElevation, double maxElevation, double avgElevation, IEnumerable<Altimetry> altimetries)
         {
             MinElevation = minElevation;
             MaxElevation = maxElevation;
@@ -31,6 +31,27 @@ namespace GPXReaderLib.Models
         /// <summary>
         /// List aff all recorded values during navigation
         /// </summary>
-        public IEnumerable<double> Altimetries { get; set; }
+        public IEnumerable<Altimetry> Altimetries { get; set; }
+    }
+
+    /// <summary>
+    /// Define an altimetry record that is composed from elevation value and the relative recorder kilometer
+    /// </summary>
+    public class Altimetry
+    {
+        public Altimetry(double elevation, double kilometers)
+        {
+            Elevation = elevation;
+            Kilometers = kilometers;
+        }
+
+        /// <summary>
+        /// Elevation related to actual kilometer
+        /// </summary>
+        public double Elevation { get; set; }
+        /// <summary>
+        /// Actual kilometers value (from 0) when the elevation was recorded
+        /// </summary>
+        public double Kilometers { get; set; }
     }
 }
