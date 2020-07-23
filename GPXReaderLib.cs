@@ -143,6 +143,9 @@ namespace GPXReaderLib
                 double lon1 = double.Parse(longitudesXAtt[i].Value);
                 double lon2 = double.Parse(longitudesXAtt[i + 1].Value);
 
+                //Continue if position is not chaged
+                if (lat1 == lat2 && lon1 == lon2) continue;
+
                 double rlat1 = Math.PI * lat1 / 180;
                 double rlat2 = Math.PI * lat2 / 180;
                 double theta = lon1 - lon2;
