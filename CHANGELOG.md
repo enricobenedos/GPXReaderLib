@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Exception\wrong value when two latitude\longitude points are equal
+- Exception when `Math.Acos()` receive values >1 or <-1. This can happen when running this library on different OS (error reported on [Microsoft Github](https://github.com/dotnet/runtime/issues/39838))
 
 ## [1.4.0] - 2020-03-18
 ### Added
