@@ -2,6 +2,8 @@
 
 This library is created using NET CORE 3.1. The main purpose is to fast read the main info of GPX file. (Tested only with Garmin's GPX)
 
+![.NET Core](https://github.com/enricobenedos/GPXReaderLib/workflows/.NET%20Core/badge.svg?branch=develop) ![.NET Core](https://github.com/enricobenedos/GPXReaderLib/workflows/.NET%20Core/badge.svg?branch=master)
+
 How to use it in a console application:
 ```c#
 static void Main(string[] args)
@@ -35,9 +37,9 @@ static void Main(string[] args)
                 }
 
                 GPXReaderLib.Models.GPXAltimetry altimetry = gPXReader.GetGPXAltimetry();
-                foreach (double elevation in altimetry.Altimetries)
+                foreach (GPXReaderLib.Models.Altimetry altimetryItem in altimetry.Altimetries)
                 {
-                    Console.WriteLine($"Elevation value: {elevation}");
+                    Console.WriteLine($"Altimetry value: Meters:{altimetryItem.Elevation} - KM:{altimetryItem.Kilometers}");
                 }
             }
             catch (Exception ex)
