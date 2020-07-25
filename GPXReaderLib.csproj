@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <ReleaseVersion>1.4.1</ReleaseVersion>
-    <Version>1.4.1</Version>
+    <ReleaseVersion>1.5.0</ReleaseVersion>
+    <Version>1.5.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
