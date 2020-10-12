@@ -31,4 +31,4 @@ jobs:
         VERSION_REGEX: '^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$'
         TAG_FORMAT: '*'
         # NuGet API Key to configure.
-        nuget-api-key: ${{secrets.NUGET_API_KEY}}
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
