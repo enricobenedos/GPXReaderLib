@@ -4,6 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ReleaseVersion>1.5.0</ReleaseVersion>
     <Version>1.5.0</Version>
+    <Authors>Enrico Benedos</Authors>
+    <PackageProjectUrl>https://github.com/enricobenedos/GPXReaderLib</PackageProjectUrl>
+    <Description>The main purpose is to fast read the main info of GPX file. (Tested only with Garmin's GPX)</Description>
   </PropertyGroup>
 
   <ItemGroup>
