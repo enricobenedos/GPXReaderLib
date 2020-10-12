@@ -27,7 +27,7 @@ jobs:
     - name: Publish to Nuget
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
-        PROJECT_FILE_PATH: GPXReaderLib/GPXReaderLib.csproj
+        PROJECT_FILE_PATH: GPXReaderLib.csproj
         VERSION_REGEX: '^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$'
         TAG_FORMAT: '*'
         # NuGet API Key to configure.
