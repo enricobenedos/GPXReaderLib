@@ -2,7 +2,7 @@
 
 This library is created using NET CORE 3.1. The main purpose is to fast read the main info of GPX file. (Tested only with Garmin's GPX)
 
-![.NET Core](https://github.com/enricobenedos/GPXReaderLib/workflows/.NET%20Core/badge.svg?branch=develop) ![.NET Core](https://github.com/enricobenedos/GPXReaderLib/workflows/.NET%20Core/badge.svg?branch=master)
+![Develop](https://github.com/enricobenedos/GPXReaderLib/workflows/Develop/badge.svg?branch=develop) ![Master](https://github.com/enricobenedos/GPXReaderLib/workflows/Master/badge.svg?branch=master)
 
 How to use it in a console application:
 ```c#
