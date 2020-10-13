@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <ReleaseVersion>1.6.0</ReleaseVersion>
-    <Version>1.6.0</Version>
+    <ReleaseVersion>1.6.1</ReleaseVersion>
+    <Version>1.6.1</Version>
     <Authors>Enrico Benedos</Authors>
     <PackageProjectUrl>https://github.com/enricobenedos/GPXReaderLib</PackageProjectUrl>
     <Description>The main purpose is to fast read the main info of GPX file. (Tested only with Garmin's GPX)</Description>
-    <PackageVersion>1.6.0</PackageVersion>
+    <PackageVersion>1.6.1</PackageVersion>
     <PackageLicenseUrl>https://github.com/enricobenedos/GPXReaderLib/blob/develop/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
