@@ -1,5 +1,5 @@
 ﻿using System;
-namespace GPXReaderLib.Models
+namespace StravaGPXReaderLib.Models
 {
     /// <summary>
     /// Class that define the longitude and latitude properties

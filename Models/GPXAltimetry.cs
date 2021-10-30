@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GPXReaderLib.Models
+namespace StravaGPXReaderLib.Models
 {
     /// <summary>
     /// Class that define min,average,max altimetry. There is also a list of all recorded altimetries

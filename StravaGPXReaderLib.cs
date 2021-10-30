@@ -4,9 +4,9 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using GPXReaderLib.Models;
+using StravaGPXReaderLib.Models;
 
-namespace GPXReaderLib
+namespace StravaGPXReaderLib
 {
     public class GPXReader
     {

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <ReleaseVersion>1.7.0</ReleaseVersion>
+    <Version>1.7.0</Version>
+    <Authors>Sean Patterson</Authors>
+    <PackageProjectUrl>https://github.com/Dillie-O/StravaGPXReaderLib</PackageProjectUrl>
+    <Description>The main purpose is to fast read the main info of GPX file. (Tested only with Garmin's GPX). Additonal fields have been added to support Strava generated GPX files.</Description>
+    <PackageVersion>1.7.0</PackageVersion>
+    <PackageLicenseUrl>https://github.com/Dillie-O/StravaGPXReaderLib/blob/develop/LICENSE</PackageLicenseUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+</Project>
