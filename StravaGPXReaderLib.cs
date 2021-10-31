@@ -15,6 +15,45 @@ namespace StravaGPXReaderLib
 
         public enum ElevationType { Min, Max, Avg }
 
+        // Enum values generated courtesy of this post: https://stackoverflow.com/questions/61903437/what-do-the-strava-gpx-type-type-elements-mean
+        public enum ActivityType
+        {
+            Ride,
+            Alpine_Ski,
+            Backcountry_Ski,
+            Hike,
+            Ice_Skate,
+            Inline_Skate,
+            Nordic_Ski,
+            Roller_Ski,
+            Run,
+            Walk,
+            Workout,
+            Snowboard,
+            Snowshoe,
+            Kitesurf,
+            Windsurf,
+            Swim,
+            Virtual_Ride,
+            EBike_Ride,
+            Velomobile,
+            Canoe,
+            Kayaking,
+            Rowing,
+            Stand_Up_Paddling,
+            Surfing,
+            Crossfit,
+            Elliptical,
+            Rock_Climb,
+            StairStepper,
+            Weight_Training,
+            Yoga,
+            Handcycle,
+            Wheelchair,
+            Virtual_Run,
+            None
+        }
+
         public GPXReader(XDocument gpx, XmlNamespaceManager xmlNamespaceManager)
         {
             this.gpx = gpx;
@@ -47,6 +86,54 @@ namespace StravaGPXReaderLib
                     return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Average(x => double.Parse(x.Value));
                 default:
                     return 0.0;
+            }
+        }
+
+        /// <summary>
+        /// Return Activity Type based on integer value retrieved
+        /// </summary>
+        /// <param name="elevationType"></param>
+        /// <returns></returns>
+        public ActivityType GetActivityType()
+        {
+            var rawType = ((int)gpx.XPathSelectElement("//p:gpx//p:trk//p:type", xmlNamespaceManager));
+
+            switch (rawType)
+            {
+                case 1: return ActivityType.Ride;
+                case 2: return ActivityType.Alpine_Ski;
+                case 3: return ActivityType.Backcountry_Ski;
+                case 4: return ActivityType.Hike;
+                case 5: return ActivityType.Ice_Skate;
+                case 6: return ActivityType.Inline_Skate;
+                case 7: return ActivityType.Nordic_Ski;
+                case 8: return ActivityType.Roller_Ski;
+                case 9: return ActivityType.Run;
+                case 10: return ActivityType.Walk;
+                case 11: return ActivityType.Workout;
+                case 12: return ActivityType.Snowboard;
+                case 13: return ActivityType.Snowshoe;
+                case 14: return ActivityType.Kitesurf;
+                case 15: return ActivityType.Windsurf;
+                case 16: return ActivityType.Swim;
+                case 17: return ActivityType.Virtual_Ride;
+                case 18: return ActivityType.EBike_Ride;
+                case 19: return ActivityType.Velomobile;
+                case 21: return ActivityType.Canoe;
+                case 22: return ActivityType.Kayaking;
+                case 23: return ActivityType.Rowing;
+                case 24: return ActivityType.Stand_Up_Paddling;
+                case 25: return ActivityType.Surfing;
+                case 26: return ActivityType.Crossfit;
+                case 27: return ActivityType.Elliptical;
+                case 28: return ActivityType.Rock_Climb;
+                case 29: return ActivityType.StairStepper;
+                case 30: return ActivityType.Weight_Training;
+                case 31: return ActivityType.Yoga;
+                case 51: return ActivityType.Handcycle;
+                case 52: return ActivityType.Wheelchair;
+                case 53: return ActivityType.Virtual_Run;
+                default: return ActivityType.None;
             }
         }
 
