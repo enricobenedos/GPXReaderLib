@@ -278,16 +278,22 @@ namespace StravaGPXReaderLib
         /// <returns></returns>
         public List<GPXCoordinates> GetGPXCoordinates()
         {
+            //TODO: Refine process to get base trackpoint element and get details from there.
+            //      Make no assumption that lat/long/time/elevation exist automatically
             List<XAttribute> latitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lat").ToList();
             List<XAttribute> longitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lon").ToList();
+            List<XElement> timestampsXEle = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:time", xmlNamespaceManager).ToList();
+            List<XElement> elevationsXEle = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).ToList();
 
             List<GPXCoordinates> gPXCoordinates = new List<GPXCoordinates>();
-            for (int i = 0; i < latitudesXAtt.Count; i++) //assume that two lists have same XAttributes count
+            for (int i = 0; i < latitudesXAtt.Count; i++) //assume that three lists have same XAttributes count
             {
                 double latitude = double.Parse(latitudesXAtt[i].Value);
                 double longitude = double.Parse(longitudesXAtt[i].Value);
+                DateTime timestamp = DateTime.Parse(timestampsXEle[i].Value);
+                double elevation = double.Parse(elevationsXEle[i].Value);
 
-                gPXCoordinates.Add(new GPXCoordinates(latitude, longitude));
+                gPXCoordinates.Add(new GPXCoordinates(latitude, longitude, timestamp, elevation));
             }
 
             return gPXCoordinates;
