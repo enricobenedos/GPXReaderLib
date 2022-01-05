@@ -51,6 +51,45 @@ namespace GPXReaderLib
         }
 
         /// <summary>
+        ///  Calculate the elevation gain.
+        /// </summary>
+        /// <param name="treshold">Treshold in kilometers.
+        /// It is needed by the algorithm to know the minimum distance between two points to calculate the elevation.
+        /// A lower\higher <paramref name="treshold"/> value can cause wrong results.</param>
+        /// <returns>Elevation gain in meters</returns>
+        public double GetElevationGain(double treshold = 0.22)
+        {
+            List<GPXCoordinates> gpxCoordinates = GetGPXCoordinates();
+            GPXCoordinates firstCoordinate = gpxCoordinates.First();
+            GPXCoordinates secondCoordinate;
+
+            double elevationGain = 0.0;
+            for (int i = 0; i < gpxCoordinates.Count; i++)
+            {
+                if (i == gpxCoordinates.Count - 1) break;
+
+                secondCoordinate = gpxCoordinates[i];
+
+                var distanceKm = GetDistance(firstCoordinate.Latitude, firstCoordinate.Longitude,
+                    secondCoordinate.Latitude, secondCoordinate.Longitude);
+                if (distanceKm < treshold)
+                {
+                    continue;
+                }
+
+                var elevation = secondCoordinate.Elevation - firstCoordinate.Elevation;
+                if (elevation > treshold)
+                {
+                    elevationGain += elevation;
+                }
+
+                firstCoordinate = secondCoordinate;
+            }
+
+            return elevationGain;
+        }
+
+        /// <summary>
         /// Return GPX start datetime
         /// </summary>
         /// <returns></returns>
@@ -185,6 +224,40 @@ namespace GPXReaderLib
             return dist * 1.609344;
         }
 
+        // TODO: GetDistance methods need to be cleaned up due to code reuse
+
+        /// <summary>
+        /// Calulcate distance between two coordinates (latitude, logitude).
+        /// </summary>
+        /// <returns>Kilometers distance</returns>
+        private double GetDistance(double latitude, double longitude, double latitude2, double longitude2)
+        {
+            // Continue if position is not chaged
+            if (latitude == latitude2 && longitude == longitude2) return 0;
+
+            double rlat1 = Math.PI * latitude / 180;
+            double rlat2 = Math.PI * latitude2 / 180;
+            double theta = longitude - longitude2;
+            double rtheta = Math.PI * theta / 180;
+            double distance =
+               Math.Sin(rlat1) * Math.Sin(rlat2) + Math.Cos(rlat1) *
+               Math.Cos(rlat2) * Math.Cos(rtheta);
+
+            if (distance > 1)
+            {
+                distance = 1;
+            }
+            else if (distance < -1)
+            {
+                distance = -1;
+            }
+
+            distance = Math.Acos(distance);
+            distance = distance * 180 / Math.PI;
+
+            return distance * 60 * 1.1515 * 1.609344;
+        }
+
         /// <summary>
         /// Return a list of latitude and longitude coordinates
         /// </summary>
@@ -193,14 +266,16 @@ namespace GPXReaderLib
         {
             List<XAttribute> latitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lat").ToList();
             List<XAttribute> longitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lon").ToList();
+            List<XElement> elevationsXEl = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).ToList();
 
             List<GPXCoordinates> gPXCoordinates = new List<GPXCoordinates>();
             for (int i = 0; i < latitudesXAtt.Count; i++) //assume that two lists have same XAttributes count
             {
                 double latitude = double.Parse(latitudesXAtt[i].Value);
                 double longitude = double.Parse(longitudesXAtt[i].Value);
+                double elevation = double.Parse(elevationsXEl[i].Value);
 
-                gPXCoordinates.Add(new GPXCoordinates(latitude, longitude));
+                gPXCoordinates.Add(new GPXCoordinates(latitude, longitude, elevation));
             }
 
             return gPXCoordinates;
