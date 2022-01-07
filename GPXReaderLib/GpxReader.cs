@@ -8,14 +8,14 @@ using GPXReaderLib.Models;
 
 namespace GPXReaderLib
 {
-    public class GPXReader
+    public class GpxReader
     {
         private readonly XDocument gpx;
         private readonly XmlNamespaceManager xmlNamespaceManager;
 
         public enum ElevationType { Min, Max, Avg }
 
-        public GPXReader(XDocument gpx, XmlNamespaceManager xmlNamespaceManager)
+        public GpxReader(XDocument gpx, XmlNamespaceManager xmlNamespaceManager)
         {
             this.gpx = gpx;
             this.xmlNamespaceManager = xmlNamespaceManager;
