@@ -6,13 +6,15 @@ namespace GPXReaderLib.Models
     /// </summary>
     public class GPXCoordinates
     {
-        public GPXCoordinates(double latitude, double longitude)
+        public GPXCoordinates(double latitude, double longitude, double elevation)
         {
             Latitude = latitude;
             Longitude = longitude;
+            Elevation = elevation;
         }
 
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public double Elevation { get; set; }
     }
 }
