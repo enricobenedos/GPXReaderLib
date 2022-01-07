@@ -59,9 +59,9 @@ namespace GPXReaderLib
         /// <returns>Elevation gain in meters</returns>
         public double GetElevationGain(double treshold = 0.22)
         {
-            List<GPXCoordinates> gpxCoordinates = GetGPXCoordinates();
-            GPXCoordinates firstCoordinate = gpxCoordinates.First();
-            GPXCoordinates secondCoordinate;
+            List<TrackPoint> gpxCoordinates = GetGPXCoordinates();
+            TrackPoint firstCoordinate = gpxCoordinates.First();
+            TrackPoint secondCoordinate;
 
             double elevationGain = 0.0;
             for (int i = 0; i < gpxCoordinates.Count; i++)
@@ -262,20 +262,20 @@ namespace GPXReaderLib
         /// Return a list of latitude and longitude coordinates
         /// </summary>
         /// <returns></returns>
-        public List<GPXCoordinates> GetGPXCoordinates()
+        public List<TrackPoint> GetGPXCoordinates()
         {
             List<XAttribute> latitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lat").ToList();
             List<XAttribute> longitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lon").ToList();
             List<XElement> elevationsXEl = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).ToList();
 
-            List<GPXCoordinates> gPXCoordinates = new List<GPXCoordinates>();
+            List<TrackPoint> gPXCoordinates = new List<TrackPoint>();
             for (int i = 0; i < latitudesXAtt.Count; i++) //assume that two lists have same XAttributes count
             {
                 double latitude = double.Parse(latitudesXAtt[i].Value);
                 double longitude = double.Parse(longitudesXAtt[i].Value);
                 double elevation = double.Parse(elevationsXEl[i].Value);
 
-                gPXCoordinates.Add(new GPXCoordinates(latitude, longitude, elevation));
+                gPXCoordinates.Add(new TrackPoint(latitude, longitude, elevation));
             }
 
             return gPXCoordinates;
@@ -285,7 +285,7 @@ namespace GPXReaderLib
         /// Return a list of elevation to obtain a detailed altimetry
         /// </summary>
         /// <returns></returns>
-        public GPXAltimetry GetGPXAltimetry()
+        public GpxAltimetry GetGpxAltimetry()
         {
             double minElevation = GetElevation(ElevationType.Min);
             double maxElevation = GetElevation(ElevationType.Max);
@@ -317,7 +317,8 @@ namespace GPXReaderLib
                 previousTrackPoint = trackPoint;
             }
 
-            return new GPXAltimetry(minElevation, maxElevation, avgElevation, altimetries);
+            return new GpxAltimetry(minElevation, maxElevation, avgElevation, altimetries);
         }
     }
 }
+
