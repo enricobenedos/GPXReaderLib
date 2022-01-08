@@ -61,18 +61,24 @@ public class UnitTest1
     [TestMethod]
     public void GetDuration()
     {
-        Assert.AreEqual(new TimeSpan(3,56,55), _gpxReader.GetDuration());
+        Assert.AreEqual(new TimeSpan(3, 56, 55), _gpxReader.GetDuration());
     }
 
     [TestMethod]
     public void GetDistance()
     {
-        Assert.AreEqual(106.73029842820526, _gpxReader.GetDistance());
+        double roundedTest = Math.Round(106.73029842820526, 4);
+        double roundedValue = Math.Round(_gpxReader.GetDistance(), 4);
+
+        Assert.AreEqual(roundedTest, roundedValue);
     }
 
     [TestMethod]
     public void GetElevationGain()
     {
-        Assert.AreEqual(434.799991607666, _gpxReader.GetElevationGain());
+        double roundedTest = Math.Round(434.799991607666, 4);
+        double roundedValue = Math.Round(_gpxReader.GetElevationGain(), 4);
+
+        Assert.AreEqual(roundedTest, roundedValue);
     }
 }
