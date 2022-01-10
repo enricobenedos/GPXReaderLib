@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using GPXReaderLib.Interfaces;
+using GPXReaderLib.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GPXReaderLib.Tests;
@@ -8,7 +11,11 @@ namespace GPXReaderLib.Tests;
 [TestClass]
 public class UnitTest1
 {
-    private GpxReader _gpxReader;
+    private readonly GpxReader _gpxReader;
+    private readonly double _minElevation = 21.799999237060547;
+    private readonly double _avgElevation = 64.68675247869096;
+    private readonly double _maxElevation = 182.0;
+    private readonly double _distance = 106.73029842820526;
 
     public UnitTest1()
     {
@@ -25,25 +32,25 @@ public class UnitTest1
     [TestMethod]
     public void GetName()
     {
-        Assert.AreEqual("Maserada sul Piave Ciclismo", _gpxReader.GetGPXName());
+        Assert.AreEqual("Maserada sul Piave Ciclismo", _gpxReader.GetGpxName());
     }
 
     [TestMethod]
     public void GetMinimumElevation()
     {
-        Assert.AreEqual(21.799999237060547, _gpxReader.GetElevation(GpxReader.ElevationType.Min));
+        Assert.AreEqual(_minElevation, _gpxReader.GetElevation(ElevationType.Min));
     }
 
     [TestMethod]
     public void GetAverageElevation()
     {
-        Assert.AreEqual(64.68675247869096, _gpxReader.GetElevation(GpxReader.ElevationType.Avg));
+        Assert.AreEqual(_avgElevation, _gpxReader.GetElevation(ElevationType.Avg));
     }
 
     [TestMethod]
     public void GetMaximumElevation()
     {
-        Assert.AreEqual(182.0, _gpxReader.GetElevation(GpxReader.ElevationType.Max));
+        Assert.AreEqual(_maxElevation, _gpxReader.GetElevation(ElevationType.Max));
     }
 
     [TestMethod]
@@ -67,7 +74,7 @@ public class UnitTest1
     [TestMethod]
     public void GetDistance()
     {
-        double roundedTest = Math.Round(106.73029842820526, 4);
+        double roundedTest = Math.Round(_distance, 4);
         double roundedValue = Math.Round(_gpxReader.GetDistance(), 4);
 
         Assert.AreEqual(roundedTest, roundedValue);
@@ -79,6 +86,22 @@ public class UnitTest1
         double roundedTest = Math.Round(434.799991607666, 4);
         double roundedValue = Math.Round(_gpxReader.GetElevationGain(), 4);
 
+        Assert.AreEqual(roundedTest, roundedValue);
+    }
+
+    [TestMethod]
+    public void GetAltimetry()
+    {
+        GpxAltimetry gpxAltimetry = _gpxReader.GetGpxAltimetry();
+
+        Assert.AreEqual(_minElevation, gpxAltimetry.MinElevation);
+        Assert.AreEqual(_maxElevation, gpxAltimetry.MaxElevation);
+        Assert.AreEqual(_avgElevation, gpxAltimetry.AvgElevation);
+
+        Assert.AreEqual(3495, gpxAltimetry.Altimetries.Count());
+
+        double roundedTest = Math.Round(_distance, 4);
+        double roundedValue = Math.Round(gpxAltimetry.Altimetries.Last().Kilometers, 4);
         Assert.AreEqual(roundedTest, roundedValue);
     }
 }
