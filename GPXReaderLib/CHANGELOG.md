@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.6.1] - 2020-10-xx
+## [2.0.0] - 2021-01-11
+### Migrated to .NET Standard 2.0 
+
+### Added 
+
+- `GetElevationGain()` in order to obtain elevation gain
+- Tests suite/project
+- `IGpxReader` interface
+
+### Breaking changes
+
+- Class and method names. Please check the sample in `README.md`
+
+## [1.6.1] - 2020-10-13
 ### Fixed
 
 - README badges (#3)
