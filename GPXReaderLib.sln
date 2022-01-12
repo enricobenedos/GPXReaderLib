@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\develop.yml = .github\workflows\develop.yml
 		.github\workflows\master.yml = .github\workflows\master.yml
 		.github\workflows\publish-nuget.yml = .github\workflows\publish-nuget.yml
+		CHANGELOG.md = CHANGELOG.md
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPXReaderLib.Tests", "GPXReaderLib.Tests\GPXReaderLib.Tests.csproj", "{2B809AA8-7E14-459B-85BE-EAC77F014176}"
