@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
@@ -13,11 +14,13 @@ namespace GPXReaderLib
     {
         private readonly XDocument gpx;
         private readonly XmlNamespaceManager xmlNamespaceManager;
+        private CultureInfo cultureInfo;
 
-        public GpxReader(XDocument gpx, XmlNamespaceManager xmlNamespaceManager)
+        public GpxReader(XDocument gpx, XmlNamespaceManager xmlNamespaceManager, CultureInfo cultureInfo = default)
         {
             this.gpx = gpx;
             this.xmlNamespaceManager = xmlNamespaceManager;
+            this.cultureInfo = cultureInfo;
         }
 
         public string GetGpxName()
@@ -30,11 +33,11 @@ namespace GPXReaderLib
             switch (elevationType)
             {
                 case ElevationType.Min:
-                    return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Min(x => double.Parse(x.Value));
+                    return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Min(x => double.Parse(x.Value, cultureInfo));
                 case ElevationType.Max:
-                    return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Max(x => double.Parse(x.Value));
+                    return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Max(x => double.Parse(x.Value, cultureInfo));
                 case ElevationType.Avg:
-                    return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Average(x => double.Parse(x.Value));
+                    return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).Average(x => double.Parse(x.Value, cultureInfo));
                 default:
                     return 0.0;
             }
@@ -72,12 +75,12 @@ namespace GPXReaderLib
 
         public DateTime GetStartDt()
         {
-            return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:time", xmlNamespaceManager).Min(x => DateTime.Parse(x.Value));
+            return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:time", xmlNamespaceManager).Min(x => DateTime.Parse(x.Value, cultureInfo));
         }
 
         public DateTime GetEndDt()
         {
-            return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:time", xmlNamespaceManager).Max(x => DateTime.Parse(x.Value));
+            return gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:time", xmlNamespaceManager).Max(x => DateTime.Parse(x.Value, cultureInfo));
         }
 
         public TimeSpan GetDuration()
@@ -117,9 +120,9 @@ namespace GPXReaderLib
             List<TrackPoint> gPXCoordinates = new List<TrackPoint>();
             for (int i = 0; i < latitudesXAtt.Count; i++) //assume that two lists have same XAttributes count
             {
-                double latitude = double.Parse(latitudesXAtt[i].Value);
-                double longitude = double.Parse(longitudesXAtt[i].Value);
-                double elevation = double.Parse(elevationsXEl[i].Value);
+                double latitude = double.Parse(latitudesXAtt[i].Value, cultureInfo);
+                double longitude = double.Parse(longitudesXAtt[i].Value, cultureInfo);
+                double elevation = double.Parse(elevationsXEl[i].Value, cultureInfo);
 
                 gPXCoordinates.Add(new TrackPoint(latitude, longitude, elevation));
             }
@@ -139,7 +142,7 @@ namespace GPXReaderLib
             //Get list of all registered info record
             foreach (TrackPoint trackPoint in GetGpxCoordinates())
             {
-                if(previousTrackPoint == null)
+                if (previousTrackPoint == null)
                 {
                     previousTrackPoint = trackPoint;
                 }
