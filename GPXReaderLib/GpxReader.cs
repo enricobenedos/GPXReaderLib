@@ -110,21 +110,37 @@ namespace GPXReaderLib
 
         public IEnumerable<TrackPoint> GetGpxCoordinates()
         {
-            List<XAttribute> latitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lat").ToList();
-            List<XAttribute> longitudesXAtt = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager).Attributes("lon").ToList();
-            List<XElement> elevationsXEl = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt//p:ele", xmlNamespaceManager).ToList();
+            IEnumerable<XElement> xTrackPoints = gpx.XPathSelectElements("//p:gpx//p:trk//p:trkseg//p:trkpt", xmlNamespaceManager);
 
-            List<TrackPoint> gPXCoordinates = new List<TrackPoint>();
-            for (int i = 0; i < latitudesXAtt.Count; i++) //assume that two lists have same XAttributes count
+            List<TrackPoint> trackPoints = new List<TrackPoint>();
+            foreach (var xTrackPoint in xTrackPoints)
             {
-                double latitude = double.Parse(latitudesXAtt[i].Value);
-                double longitude = double.Parse(longitudesXAtt[i].Value);
-                double elevation = double.Parse(elevationsXEl[i].Value);
+                double latitude = double.Parse(xTrackPoint.Attribute("lat").Value);
+                double longitude = double.Parse(xTrackPoint.Attribute("lon").Value);
 
-                gPXCoordinates.Add(new TrackPoint(latitude, longitude, elevation));
+                // It is possible that ele tag is not available on some trackpoint records,
+                // so by default try to get the previuos trackpoint value in order to avoid 
+                // data holes. In case of not previous data the double default is used.
+                double elevation = default;
+
+                XElement eleXElement = xTrackPoint.XPathSelectElement("p:ele", xmlNamespaceManager);
+                if (eleXElement != null)
+                {
+                    elevation = double.Parse(eleXElement.Value);
+                }
+                else
+                {
+                    //Use the previous value if available else default
+                    if(trackPoints.Count > 0)
+                    {
+                        elevation = trackPoints.Last().Elevation;
+                    }
+                }
+
+                trackPoints.Add(new TrackPoint(latitude, longitude, elevation));
             }
 
-            return gPXCoordinates;
+            return trackPoints;
         }
 
         public GpxAltimetry GetGpxAltimetry()
@@ -139,7 +155,7 @@ namespace GPXReaderLib
             //Get list of all registered info record
             foreach (TrackPoint trackPoint in GetGpxCoordinates())
             {
-                if(previousTrackPoint == null)
+                if (previousTrackPoint == null)
                 {
                     previousTrackPoint = trackPoint;
                 }
