@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <ReleaseVersion>2.0.0</ReleaseVersion>
+    <ReleaseVersion>2.0.2</ReleaseVersion>
     <Description>The main purpose is to fast read the main info of GPX file. (Tested only with Garmin's GPX)</Description>
-    <PackageVersion>2.0.0</PackageVersion>
+    <PackageVersion>2.0.2</PackageVersion>
     <Authors>Enrico Benedos</Authors>
     <PackageLicenseUrl>https://github.com/enricobenedos/GPXReaderLib/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/enricobenedos/GPXReaderLib</PackageProjectUrl>
