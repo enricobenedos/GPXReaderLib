@@ -78,7 +78,6 @@
         </extensions>
       </trkpt>
       <trkpt lat="45.7578345201909542083740234375" lon="12.31665308587253093719482421875">
-        <ele>39</ele>
         <time>2018-08-25T07:57:46.000Z</time>
         <extensions>
           <ns3:TrackPointExtension>
